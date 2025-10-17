@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import TodoForm from '../components/TodoForm';
 import TodoItem from '../components/TodoItem';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 interface Todo {
   id: string;
@@ -11,22 +12,8 @@ interface Todo {
 }
 
 export default function Home() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-
-  // Загружаем задачи из localStorage при загрузке компонента
-  useEffect(() => {
-    const storedTodos = localStorage.getItem('todos');
-    if (storedTodos) {
-      setTodos(JSON.parse(storedTodos));
-    }
-  }, []);
-
-  // Сохраняем задачи в localStorage при каждом изменении
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
-
+  // Заменяем useState на useLocalStorage
+  const [todos, setTodos] = useLocalStorage<Todo[]>('todos', []);
 
   const addTodo = (text: string) => {
     const newTodo: Todo = {
@@ -51,6 +38,11 @@ export default function Home() {
 
   const completedCount = todos.filter((todo) => todo.completed).length;
 
+  // Добавляем кнопку для очистки всех задач
+  const clearAllTodos = () => {
+    setTodos([]);
+  };
+
   return (
       <div className="min-h-screen bg-gray-100 py-8">
         <div className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
@@ -60,10 +52,18 @@ export default function Home() {
 
           <TodoForm onAdd={addTodo} />
 
-          <div className="mb-4">
+          <div className="flex justify-between items-center mb-4">
             <p className="text-gray-600">
               Всего задач: {todos.length} | Выполнено: {completedCount}
             </p>
+            {todos.length > 0 && (
+                <button
+                    onClick={clearAllTodos}
+                    className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                >
+                  Очистить все
+                </button>
+            )}
           </div>
 
           <div>
