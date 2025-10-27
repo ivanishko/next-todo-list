@@ -1,4 +1,24 @@
+'use client';
+import PostForm from '../../components/PostForm';
+import {useLocalStorage} from "../../hooks/useLocalStorage";
+import PostItem from "../../components/PostItem";
+
+interface Post {
+  id: string;
+  text: string;
+}
+
 export default function Posts() {
+  const [posts, setPosts] = useLocalStorage<Post[]>('posts', []);
+
+  const addPost = (text: string) => {
+    const newPost: { id: string; text: string } = {
+      id: Date.now().toString(),
+      text,
+    };
+    setPosts([...posts, newPost]);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -14,6 +34,24 @@ export default function Posts() {
 
         {/* Контент с Lorem Ipsum */}
         <div className="bg-white rounded-xl shadow-lg p-8">
+
+
+            <PostForm onAdd={addPost}/>
+          <div>
+            {posts.length === 0 ? (
+                <p className="text-center text-gray-500 py-4">
+                  Пока нет задач. Добавьте первую!
+                </p>
+            ) : (
+                posts.map((todo) => (
+                    <PostItem
+                        key={todo.id}
+                        id={todo.id}
+                        text={todo.text}
+                    />
+                ))
+            )}
+          </div>
           <article className="prose prose-lg max-w-none">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               Добро пожаловать в мой блог!
