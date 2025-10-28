@@ -26,10 +26,10 @@ export default function Navigation() {
                   <Link
                       key={link.href}
                       href={link.href}
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                           pathname === link.href
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'text-gray-600 hover:text-gray-900'
+                              ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }`}
                   >
                     {link.label}
